@@ -43,15 +43,17 @@ class RandomUserTableViewController: UITableViewController {
     private func loadData(forCell cell: RandomUserTableViewCell, forRowAt indexPath: IndexPath) {
         let randomUser = fetchController.randomUsers[indexPath.row]
         
-        // cache
-        
         let fetchOp = FetchOperation(randomUser: randomUser)
         
-        // cacheOp
+        let cacheOp = BlockOperation {
+            if let imageData = fetchOp.imageData {
+                self.cache.cache(value: imageData, for: randomUser.email)
+            }
+        }
         
         let completionOp = BlockOperation {
             NSLog("Completed")
-            // cache : defer { self.}
+            defer { self.operations.removeValue(forKey: randomUser.email) }
             
             if let currentIndexPath = self.tableView.indexPath(for: cell),
                 currentIndexPath != indexPath {
@@ -66,10 +68,14 @@ class RandomUserTableViewController: UITableViewController {
                 cell.nameLabel.text = name
             }
         }
+        cacheOp.addDependency(fetchOp)
         completionOp.addDependency(fetchOp)
         
         photoFetchQueue.addOperation(fetchOp)
+        photoFetchQueue.addOperation(cacheOp)
         OperationQueue.main.addOperation(completionOp)
+        
+        operations[randomUser.email] = fetchOp
     }
     
 
@@ -87,5 +93,9 @@ class RandomUserTableViewController: UITableViewController {
     let fetchController = FetchController()
     
     private let photoFetchQueue = OperationQueue()
+    
+    private var operations = [String : Operation]()
+    
+    private let cache = Cache<String, Data>()
 
 }

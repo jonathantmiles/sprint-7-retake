@@ -18,6 +18,7 @@
 		F8461AC1217EC3EF009A8AED /* RandomUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8461AC0217EC3EF009A8AED /* RandomUser.swift */; };
 		F8461AC3217ECB40009A8AED /* RandomUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8461AC2217ECB40009A8AED /* RandomUserDetailViewController.swift */; };
 		F8461AC6217ECD88009A8AED /* FetchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8461AC5217ECD88009A8AED /* FetchOperation.swift */; };
+		F8461AC8217ED4BB009A8AED /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8461AC7217ED4BB009A8AED /* Cache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		F8461AC0217EC3EF009A8AED /* RandomUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomUser.swift; sourceTree = "<group>"; };
 		F8461AC2217ECB40009A8AED /* RandomUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomUserDetailViewController.swift; sourceTree = "<group>"; };
 		F8461AC5217ECD88009A8AED /* FetchOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchOperation.swift; sourceTree = "<group>"; };
+		F8461AC7217ED4BB009A8AED /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				F8461AC0217EC3EF009A8AED /* RandomUser.swift */,
+				F8461AC7217ED4BB009A8AED /* Cache.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8ED6A9882140178A00FC395A /* AppDelegate.swift in Sources */,
+				F8461AC8217ED4BB009A8AED /* Cache.swift in Sources */,
 				F8461AB8217EC1D0009A8AED /* RandomUserTableViewController.swift in Sources */,
 				F8461AC6217ECD88009A8AED /* FetchOperation.swift in Sources */,
 				9D5CCA55214231DD00224681 /* ConcurrentOperation.swift in Sources */,
