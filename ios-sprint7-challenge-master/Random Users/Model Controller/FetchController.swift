@@ -16,7 +16,9 @@ class FetchController {
     
     func fetchRandomUsers() {
         
-        URLSession.shared.dataTask(with: url) { (data, _, error) in
+        let request = URLRequest(url: url)
+
+        URLSession.shared.dataTask(with: request) { (data, _, error) in
             if let error = error {
                 NSLog("Error fetching RandomUsers: \(error)")
                 return
@@ -27,15 +29,14 @@ class FetchController {
             }
             
             do {
-                let resultsAndInfo = try JSONDecoder().decode([String: [String: RandomUser]].self, from: data)
-                if let results = resultsAndInfo["object"] {
-                    self.randomUsers = Array(results.values)
-                }
+                let resultsAndInfo = try JSONDecoder().decode(Results.self, from: data)
+                let results = resultsAndInfo.results
+                self.randomUsers = results
             } catch {
                 NSLog("Error decoding JSON Data: \(error)")
                 return
             }
-        }
+        }.resume()
         
     }
     

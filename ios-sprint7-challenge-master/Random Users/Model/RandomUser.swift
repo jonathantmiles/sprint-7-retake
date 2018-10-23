@@ -26,3 +26,15 @@ struct RandomUser: Codable {
         let thumbnail: URL
     }
 }
+
+struct Results: Codable {
+    let results: [RandomUser]
+    let info: Info
+    
+    struct Info: Codable {
+        let seed: String
+        let results: Int
+        let page: Int
+        let version: String
+    }
+}

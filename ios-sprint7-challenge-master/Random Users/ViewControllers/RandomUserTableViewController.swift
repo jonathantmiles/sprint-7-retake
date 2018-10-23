@@ -13,20 +13,14 @@ class RandomUserTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        fetchRandomUsers()
+        tableView.reloadData()
     }
 
     // MARK: - Table view data source
 
-    
-
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return randomUsers.count
     }
 
     
@@ -40,19 +34,50 @@ class RandomUserTableViewController: UITableViewController {
     
     // MARK: - Private
     
+    func fetchRandomUsers() {
+        
+        let request = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: request) { (data, _, error) in
+            if let error = error {
+                NSLog("Error fetching RandomUsers: \(error)")
+                return
+            }
+            guard let data = data else {
+                NSLog("Error with data returned from fetch: \(error)")
+                return
+            }
+            
+            do {
+                let resultsAndInfo = try JSONDecoder().decode(Results.self, from: data)
+                let results = resultsAndInfo.results
+                self.randomUsers = results
+            } catch {
+                NSLog("Error decoding JSON Data: \(error)")
+                return
+            }
+        }.resume()
+        
+    }
+    
+    
+    
     private func loadData(forCell cell: RandomUserTableViewCell, forRowAt indexPath: IndexPath) {
-        let randomUser = fetchController.randomUsers[indexPath.row]
+        let randomUser = randomUsers[indexPath.row]
+        
+        if let cachedImageData = cache.value(for: randomUser.email) {
+            
+        }
         
         let fetchOp = FetchOperation(randomUser: randomUser)
         
         let cacheOp = BlockOperation {
-            if let imageData = fetchOp.imageData {
-                self.cache.cache(value: imageData, for: randomUser.email)
+            if let image = fetchOp.image {
+                self.cache.cache(value: image, for: randomUser.email)
             }
         }
         
         let completionOp = BlockOperation {
-            NSLog("Completed")
             defer { self.operations.removeValue(forKey: randomUser.email) }
             
             if let currentIndexPath = self.tableView.indexPath(for: cell),
@@ -60,11 +85,11 @@ class RandomUserTableViewController: UITableViewController {
                 return
             }
             
-            if let imageData = fetchOp.imageData,
+            if let image = fetchOp.image,
                 let imageView = cell.imageView {
-                imageView.image = UIImage(data: imageData)
+                imageView.image = image
                 
-                let name = "\(randomUser.name.title) + \(randomUser.name.first) + \(randomUser.name.last)"
+                let name = "\(randomUser.name.title). " + "\(randomUser.name.first) " + "\(randomUser.name.last)"
                 cell.nameLabel.text = name
             }
         }
@@ -85,17 +110,25 @@ class RandomUserTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destVC = segue.destination as! RandomUserDetailViewController
         guard let indexPath = tableView.indexPathForSelectedRow else { return }
-        destVC.randomUser = fetchController.randomUsers[indexPath.row]
+        destVC.randomUser = randomUsers[indexPath.row]
     }
     
     // MARK: - Properties
     
-    let fetchController = FetchController()
+    var randomUsers = [RandomUser]() {
+        didSet {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    private let url = URL(string: "https://randomuser.me/api/?format=json&inc=name,email,phone,picture&results=1000")!
     
     private let photoFetchQueue = OperationQueue()
     
     private var operations = [String : Operation]()
     
-    private let cache = Cache<String, Data>()
+    private let cache = Cache<String, UIImage>()
 
 }

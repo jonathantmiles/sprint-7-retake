@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class FetchOperation: ConcurrentOperation {
     
@@ -27,7 +28,8 @@ class FetchOperation: ConcurrentOperation {
                 NSLog("Error fetching data for \(self.randomUser): \(error)")
                 return
             }
-            self.imageData = data
+            guard let data = data else { return }
+            self.image = UIImage(data: data)
         }
         task.resume()
         dataTask = task
@@ -42,7 +44,7 @@ class FetchOperation: ConcurrentOperation {
     
     let randomUser: RandomUser
     private let session: URLSession
-    private(set) var imageData: Data?
+    private(set) var image: UIImage?
     private var dataTask: URLSessionDataTask?
     
 }

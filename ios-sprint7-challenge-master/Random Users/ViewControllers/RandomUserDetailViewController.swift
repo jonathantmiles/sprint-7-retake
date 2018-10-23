@@ -14,6 +14,7 @@ class RandomUserDetailViewController: UIViewController {
         super.viewWillAppear(animated)
         
         fetchImage()
+        updateViews()
     }
     
     private func fetchImage() {
@@ -34,7 +35,7 @@ class RandomUserDetailViewController: UIViewController {
     
     private func updateViews() {
         guard let randomUser = randomUser else { return }
-        let name = "\(randomUser.name.title) + \(randomUser.name.first) + \(randomUser.name.last)"
+        let name = "\(randomUser.name.title). " + "\(randomUser.name.first) " + "\(randomUser.name.last)"
         nameLabel.text = name
         phoneNumber.text = randomUser.phone
         emailAddressLabel.text = randomUser.email
