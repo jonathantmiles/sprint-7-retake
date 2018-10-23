@@ -32,6 +32,17 @@ class RandomUserTableViewController: UITableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if randomUsers.count > 0 {
+            let randomUser = randomUsers[indexPath.row]
+            operations[randomUser.email]?.cancel()
+        } else {
+            for (_, operation) in operations {
+                operation.cancel()
+            }
+        }
+    }
+    
     // MARK: - Private
     
     func fetchRandomUsers() {
@@ -65,8 +76,9 @@ class RandomUserTableViewController: UITableViewController {
     private func loadData(forCell cell: RandomUserTableViewCell, forRowAt indexPath: IndexPath) {
         let randomUser = randomUsers[indexPath.row]
         
-        if let cachedImageData = cache.value(for: randomUser.email) {
-            
+        if let cachedImage = cache.value(for: randomUser.email) {
+            cell.imageView?.image = cachedImage
+            return
         }
         
         let fetchOp = FetchOperation(randomUser: randomUser)

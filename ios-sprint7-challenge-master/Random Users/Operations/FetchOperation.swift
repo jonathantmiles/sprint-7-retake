@@ -44,6 +44,7 @@ class FetchOperation: ConcurrentOperation {
     
     let randomUser: RandomUser
     private let session: URLSession
+    private(set) var imageData: Data?
     private(set) var image: UIImage?
     private var dataTask: URLSessionDataTask?
     
